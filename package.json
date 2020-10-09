@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node server",
-    "server": "nodemon server" 
+    "server": "nodemon server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "reza-nazari",
   "license": "MIT",
@@ -20,5 +22,6 @@
     "mongoose": "^5.10.7",
     "nodemon": "^2.0.4",
     "request": "^2.88.2"
-  }
+  },
+  "dependencies": {}
 }
