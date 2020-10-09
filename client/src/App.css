@@ -1,0 +1,56 @@
+:root {
+    --primary: #64ffda;
+    --p-dark: #14cba8;
+    --p-light: #9effff;
+    --success: #9effff;
+    --danger: #ff5252;
+}
+
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    font-size: 62.5%;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+body {
+    font-size: 2rem;
+    line-height: 1.6;
+    background-color: #fff;
+    color: #333;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+.container{
+    width: 1000px;
+    margin: 60px auto 0;
+}
+
+.x-large {
+    font-size: 8rem;
+    margin-bottom: 2rem;
+
+}
+
+.large {
+    font-size: 6rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.lead {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}

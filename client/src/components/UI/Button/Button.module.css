@@ -1,0 +1,31 @@
+.Button{
+    padding: 1rem 2rem;
+    color: #000;
+    border:none;
+    border-bottom: 2px solid #fff;
+    margin: 1rem 1rem 1rem 0;
+    cursor: pointer;
+    background-color: #fff;
+    font-size: 1.6rem;
+}
+
+
+
+.Button:disabled {
+    cursor: not-allowed;
+    color: #aaa;
+    background-color: #ccc;
+}
+
+.Danger{
+    background-color: var(--danger);
+    color: #fff;
+
+}
+
+.Success{
+    background-color: var(--p-dark);
+    color: #fff;
+
+
+}

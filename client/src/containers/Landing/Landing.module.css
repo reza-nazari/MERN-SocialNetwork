@@ -1,0 +1,26 @@
+.Landing {
+    position: relative;
+    background: url('../../assets/img/30.jpg') no-repeat center center/cover;
+    height: 100vh;
+}
+
+.LandingInner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #fff;
+    text-align: center;
+    width: 80%;
+    margin: auto;
+}
+
+.dark_overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
