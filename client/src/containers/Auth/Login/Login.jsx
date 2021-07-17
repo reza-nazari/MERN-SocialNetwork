@@ -6,6 +6,8 @@ import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 
 import {initLogin} from '../../../store/actions/index';
+import {input_helper as login_inputs_helper} from '../../../helpers/inputs_helper';
+
 
 const Login = (props) => {
     const [formIsValid, setFormIsValid] = useState(false);
@@ -19,7 +21,7 @@ const Login = (props) => {
             value: '',
             validation: {
                 required: true,
-                isEmeil: true,
+                isEmail: true,
             },
             valid: false,
             touched: false,
@@ -39,50 +41,7 @@ const Login = (props) => {
             touched: false,
         },
     });
-
-    const checkValidity = (value, rules) => {
-        let isValid = true;
-
-        if (!rules) {
-            return true;
-        }
-
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-        return isValid;
-    };
-
-    const inputChangedHandler = (event, inputIdentifier) => {
-        const updatedOrderForm = {
-            ...authForm,
-        };
-
-        const updatedFormElement = {
-            ...updatedOrderForm[inputIdentifier],
-        };
-        updatedFormElement.value = event.target.value;
-
-        updatedFormElement.valid = checkValidity(
-            updatedFormElement.value,
-            updatedFormElement.validation,
-        );
-        updatedFormElement.touched = true;
-        updatedOrderForm[inputIdentifier] = updatedFormElement;
-
-        let isValid = true;
-
-        for (let inputIdentifier in updatedOrderForm) {
-            isValid = updatedOrderForm[inputIdentifier].valid && isValid;
-        }
-
-        setAuthForm({
-            ...authForm,
-            [inputIdentifier]: updatedOrderForm[inputIdentifier],
-        });
-        setFormIsValid(isValid);
-    };
-
+  
     const submitHandler = (e) => {
         e.preventDefault();
 
@@ -110,11 +69,11 @@ const Login = (props) => {
                     elementType={formElement.config.elementType}
                     elementConfig={formElement.config.elementConfig}
                     value={formElement.config.value}
-                    invalid={formElement.config.invalid}
-                    shouldValidate={formElement.config.shouldValidate}
+                    invalid={!formElement.config.valid}
+                    shouldValidate={formElement.config.validation.required}
                     touched={formElement.config.touched}
                     changed={(event) =>
-                        inputChangedHandler(event, formElement.id)
+                        setFormIsValid(login_inputs_helper.changedHandler(event, formElement.id, authForm, setAuthForm))
                     }
                 />
             ))}
@@ -123,21 +82,23 @@ const Login = (props) => {
                 disabled={!formIsValid}
                 clicked={submitHandler}
             >
-                Register
+                Login
             </Button>
         </form>
     );
-
+                    console.log(props)
     if (props.isAuthenticated) {
-        return <Redirect to='/dashboard' />;
+        return <Redirect to='/Dashboard' />;
     }
+
+    
     return (
         <div className='container'>
             <h1 className='large'>Sign In</h1>
             <p className='lead'>Sign in to your account</p>
             {form}
             <p>
-                Don't have an account? <Link to='/register'>Sign Up</Link>
+                Don't have an account? <Link to='/Register'>Sign Up</Link>
             </p>
         </div>
     );
@@ -146,12 +107,13 @@ const Login = (props) => {
 const mapStateTpProps = (state) => {
     return {
         isAuthenticated: state.auth.isAuthenticated,
+        loading: state.auth.loading
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onInitLogin: (paylaod) => dispatch(initLogin(paylaod)),
+        onInitLogin: (payload) => dispatch(initLogin(payload)),
     };
 };
 

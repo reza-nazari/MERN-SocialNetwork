@@ -1,27 +1,21 @@
-import * as actionType from './actionTypes';
-import {setAlert} from './index';
-import axios from 'axios';
-import setAuthToken from '../../utils/setAuthToken';
+import * as actionType from '../actionTypes';
+import { setAlert } from './index';
+import setAuthToken from '../../config/setAuthToken';
+import sn_v1_account_repo from '../../repository/v1/account_repo';
 
 //INIT REGISTER
 export const initRegister = (payload) => async (dispatch) => {
-    const {name, email, password} = payload;
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
-
-    const body = JSON.stringify({name, email, password});
+    const { name, email, password } = payload;
+    const register_model = { name, email, password };
 
     try {
-        const res = await axios.post('api/users', body, config);
+        const res = await sn_v1_account_repo.register(register_model)
 
         dispatch(registerSuccess(res.data));
 
         dispatch(initUserLoad());
-    } catch (err) {
-        const errors = err.response.data.errors;
+    } catch (response) {
+        const errors = response.data.errors;
 
         if (errors) {
             errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
@@ -31,40 +25,30 @@ export const initRegister = (payload) => async (dispatch) => {
     }
 };
 
-//REGISTER SUCCESS
-const registerSuccess = (paylaod) => {
+function registerSuccess(payload) {
     return {
         type: actionType.REGISTER_SUCCESS,
-        payload: paylaod,
+        payload: payload,
     };
 };
 
-//REGISTER FAIL
-const registerFail = (er) => async (dispatch) => {
+function registerFail() {
     return {
         type: actionType.REGISTER_FAIL,
     };
 };
 
-//INIT LOGIN
 export const initLogin = (payload) => async (dispatch) => {
-    const {email, password} = payload;
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
-
-    const body = JSON.stringify({email, password});
+    const { email, password } = payload;
+    const login_model = ({ email, password });
 
     try {
-        const res = await axios.post('api/auth', body, config);
+        const response = await sn_v1_account_repo.login(login_model)
 
-        dispatch(loginSuccess(res.data));
-
+        dispatch(loginSuccess(response.data));
         dispatch(initUserLoad());
     } catch (err) {
-        const errors = err.response.data.errors;
+        const errors = err.data.errors;
 
         if (errors) {
             errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
@@ -74,31 +58,30 @@ export const initLogin = (payload) => async (dispatch) => {
     }
 };
 
-//LOGIN SUCCESS
-const loginSuccess = (paylaod) => {
+function loginSuccess(payload) {
     return {
         type: actionType.LOGIN_SUCCESS,
-        payload: paylaod,
+        payload: payload,
     };
 };
 
-//LOGIN FAIL
-const loginFail = (er) => async (dispatch) => {
+function loginFail() {
     return {
         type: actionType.LOGIN_FAIL,
     };
 };
 
-//LOAD USER
 export const initUserLoad = () => async (dispatch) => {
     if (localStorage.token) {
         setAuthToken(localStorage.token);
     }
 
     try {
-        const res = await axios.get('/api/auth');
+        const response = await sn_v1_account_repo.getUser();
 
-        dispatch(loadUserSuccess(res.data));
+        if (response)
+            dispatch(loadUserSuccess(response));
+
     } catch (error) {
         dispatch(authError());
     }
@@ -116,8 +99,12 @@ export const authError = () => {
     };
 };
 
-export const logout = () => {
-    return {
+export const logout = () => dispatch => {
+    dispatch({
+        type: actionType.CLEAR_PROFILE
+    });
+
+    dispatch({
         type: actionType.LOGOUT,
-    };
+    });  
 };

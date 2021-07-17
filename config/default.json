@@ -1,5 +1,5 @@
 {
-    "mongoURI": "mongodb+srv://rezanazari:aAwM71cko0jOFYHN@developers.wseoh.mongodb.net/test?retryWrites=true&w=majority",
+    "mongoURI": "mongodb://localhost:27017/mern",
     "jwtToken": "secrettoken",
     "githybClientId": "067945699b3f0cf80197",
     "githubClientSecret": "2bc7ddcf4a43c563de8b6e98cbef82f240d9f946"

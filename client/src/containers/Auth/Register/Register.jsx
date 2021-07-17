@@ -178,7 +178,7 @@ const Register = (props) => {
     );
 
     if (props.isAuthenticated) {
-        return <Redirect to='/dashboard' />;
+        return <Redirect to='/Dashboard' />;
     }
 
     return (

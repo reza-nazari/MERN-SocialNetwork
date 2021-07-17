@@ -1,14 +1,14 @@
 import React from 'react';
-import {useHistory} from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import classes from './Landing.module.css';
 import Button from '../../components/UI/Button/Button';
 
-const Landing = (props) => {
-    const history = useHistory();
-
-    const registerHandler = () => history.push('/register');
-    const loginHandler = () => history.push('/login');
+const Landing = ({ isAuthenticated }) => {
+    if (isAuthenticated) {
+        return <Redirect to="/Dashboard" />
+    }
 
     return (
         <section className={classes.Landing}>
@@ -22,10 +22,15 @@ const Landing = (props) => {
                         developers
                     </p>
                     <div className='buttons'>
-                        <Button type='Success' clicked={registerHandler}>
-                            Sign Up
-                        </Button>
-                        <Button clicked={loginHandler}>Login</Button>
+                        <Link to="/Register">
+                            <Button type='Success' >
+                                Sign Up
+                            </Button>
+                        </Link>
+                        <Link to="/Login">
+                            <Button >Login</Button>
+                        </Link>
+
                     </div>
                 </div>
             </div>
@@ -33,4 +38,10 @@ const Landing = (props) => {
     );
 };
 
-export default Landing;
+const mapStateTpProps = state => {
+    return {
+        isAuthenticated: state.auth.isAuthenticated
+    }
+}
+
+export default connect(mapStateTpProps)(Landing);

@@ -1,17 +1,16 @@
-import React, {Fragment, useEffect} from 'react';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import Layout from './containers/Layout/Layout';
-import Landing from './containers/Landing/Landing.js';
-import Register from './containers/Auth/Register/Register';
-import Login from './containers/Auth/Login/Login';
-import Logout from './containers/Auth/Logout/Logout';
-import './App.css';
+import React, { Fragment, useEffect } from 'react';
+import { BrowserRouter, Switch } from 'react-router-dom';
+import routes from './config/routes';
+import setAuthToken from './config/setAuthToken';
+import { initUserLoad } from './store/actions/index';
 import Alert from './components/UI/Alert/Alert';
-import setAuthToken from './utils/setAuthToken';
-import {initUserLoad} from './store/actions/index';
+import Layout from './containers/Layout/Layout';
+import PrivateRoute from './components/Route/PrivateRoute';
+import PublicRoute from './components/Route/PublicRoute';
+import './App.css';
 
 //redux
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import store from './store/store';
 
 if (localStorage.token) {
@@ -20,7 +19,9 @@ if (localStorage.token) {
 
 const App = () => {
     useEffect(() => {
-        if (localStorage.token) store.dispatch(initUserLoad());
+        if (localStorage.token){
+            store.dispatch(initUserLoad());
+        }
     }, []);
 
     return (
@@ -30,11 +31,24 @@ const App = () => {
                     <Layout>
                         <Alert />
                         <Switch>
-                            <Route path='/register' component={Register} />
-                            <Route path='/login' component={Login} />
-                            <Route path='/logout' component={Logout} />
+                            {routes.map((route) => (
+                                route.isPrivate ?
+                                    <PrivateRoute
+                                        key={route.path}
+                                        path={route.path}
+                                        component={route.component}
+                                        exact
+                                    /> :
+                                    <PublicRoute
+                                        key={route.path}
+                                        path={route.path}
+                                        component={route.component}
+                                        exact
+                                    />
+
+                            ))}
                         </Switch>
-                        <Route exact path='/' component={Landing} />
+
                     </Layout>
                 </Fragment>
             </BrowserRouter>

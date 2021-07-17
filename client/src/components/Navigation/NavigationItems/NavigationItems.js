@@ -1,23 +1,30 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import { connect } from 'react-redux';
 
 import classes from './NavigationItems.module.css';
 import NavigationItem from './NavigationItem/NavigationItem';
 
-const NavigationItems = (props) => (
-    <ul className={classes.NavigationItems}>
-        <NavigationItem link='/developers' active exact>
-            Developers
-        </NavigationItem>
-        {props.isAuthenticated ? null : (
-            <NavigationItem link='/register'>Register</NavigationItem>
-        )}
+const NavigationItems = ({ auth: { isAuthenticated, loading }, logout }) => {
+    const authLink = (
+        <NavigationItem link='/Logout'>Logout</NavigationItem>
+    );
 
-        {props.isAuthenticated ? (
-            <NavigationItem link='/logout'>Logout</NavigationItem>
-        ) : (
-            <NavigationItem link='/login'>Login</NavigationItem>
-        )}
-    </ul>
-);
+    const guestLink = (
+        <Fragment>
+            <NavigationItem link='/Register' exact>Register</NavigationItem>
+            <NavigationItem link='/Login' >Login</NavigationItem>
+        </Fragment>
+    )
+     
+    return (
+        <ul className={classes.NavigationItems}>
+            {isAuthenticated ? authLink : guestLink}
+        </ul>
+    )
+};
 
-export default NavigationItems;
+const mapStateTpProps = state => ({
+    auth: state.auth
+})
+
+export default connect(mapStateTpProps)(NavigationItems);
