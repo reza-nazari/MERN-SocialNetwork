@@ -3,7 +3,6 @@ import { CLEAR_PROFILE, GET_PROFILE, PROFILE_ERROR } from '../actionTypes'
 const initialState = {
     profile: null,
     profiles: [],
-    loading: false,
     repos: [],
     error: {}
 }

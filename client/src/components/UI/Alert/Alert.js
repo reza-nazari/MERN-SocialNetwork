@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import classes from './Alert.module.css';
 
 const Alert = ({ alerts }) => {
+    console.log(alerts)
     return alerts !== null &&
         alerts.length > 0 &&
         alerts.map((alert) => (

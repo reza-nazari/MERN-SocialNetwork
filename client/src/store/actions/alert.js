@@ -4,7 +4,7 @@ import * as actionType from '../actionTypes';
 //SET ALERT
 export const setAlert = (msg, alertType) => (dispatch) => {
     const id = uuid();
-
+    console.log(msg)
     dispatch({
         type: actionType.SET_ALERT,
         payload: {

@@ -1,3 +1,4 @@
 export { setAlert } from './alert';
-export { initRegister, initUserLoad, initLogin, logout } from './auth';
+export { loading_on, loading_off } from './loading'
+export { initRegister, initUserLoad, initLogin, initial_logout } from './auth';
 export { getCurrentProfile } from './profile';

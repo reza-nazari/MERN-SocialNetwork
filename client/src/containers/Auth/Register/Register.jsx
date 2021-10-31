@@ -1,15 +1,18 @@
-import React, {useState} from 'react';
-import {connect} from 'react-redux';
-import {Redirect} from 'react-router-dom';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
+import Spinner from '../../../components/UI/Spinner/Spinner';
 
-import {setAlert} from '../../../store/actions/index';
-import {initRegister} from '../../../store/actions/index';
+import { setAlert } from '../../../store/actions/index';
+import { initRegister, loading_on, loading_off } from '../../../store/actions/index';
+
+import {input_helper as register_inputs_helper} from '../../../helpers/inputs_helper';
+
 
 const Register = (props) => {
-    // const [isSignUp, setIsSignUp] = useState(true);
     const [formIsValid, setFormIsValid] = useState(false);
     const [authForm, setAuthForm] = useState({
         name: {
@@ -72,67 +75,10 @@ const Register = (props) => {
         },
     });
 
-    const checkValidity = (value, rules) => {
-        let isValid = true;
-
-        if (!rules) {
-            return true;
-        }
-
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid;
-        }
-
-        if (rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid;
-        }
-
-        if (rules.isMatch) {
-            const password = authForm.password.value;
-            const confirmPassword = value;
-
-            isValid = password === confirmPassword;
-        }
-
-        return isValid;
-    };
-
-    const inputChangedHandler = (event, inputIdentifier) => {
-        const updatedOrderForm = {
-            ...authForm,
-        };
-
-        const updatedFormElement = {
-            ...updatedOrderForm[inputIdentifier],
-        };
-        updatedFormElement.value = event.target.value;
-
-        updatedFormElement.valid = checkValidity(
-            updatedFormElement.value,
-            updatedFormElement.validation,
-        );
-        updatedFormElement.touched = true;
-        updatedOrderForm[inputIdentifier] = updatedFormElement;
-
-        let isValid = true;
-
-        for (let inputIdentifier in updatedOrderForm) {
-            isValid = updatedOrderForm[inputIdentifier].valid && isValid;
-        }
-
-        setAuthForm({
-            ...authForm,
-            [inputIdentifier]: updatedOrderForm[inputIdentifier],
-        });
-        setFormIsValid(isValid);
-    };
-
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
+
+        props.loading_on();
 
         let newUser = {
             name: authForm['name'].value,
@@ -140,7 +86,8 @@ const Register = (props) => {
             password: authForm['password'].value,
         };
 
-        props.onInitRegister(newUser);
+        await props.onInitRegister(newUser);
+        props.loading_off();
     };
 
     const formElementArray = [];
@@ -163,7 +110,7 @@ const Register = (props) => {
                     shouldValidate={formElement.config.shouldValidate}
                     touched={formElement.config.touched}
                     changed={(event) =>
-                        inputChangedHandler(event, formElement.id)
+                        setFormIsValid(register_inputs_helper.changedHandler(event, formElement.id, authForm, setAuthForm))
                     }
                 />
             ))}
@@ -186,6 +133,7 @@ const Register = (props) => {
             <h1 className='large'>Sign Up</h1>
             <p className='lead'>Create your account</p>
             {form}
+            {props.loading ? <Spinner /> : null}
         </div>
     );
 };
@@ -193,14 +141,16 @@ const Register = (props) => {
 const mapStateTpProps = (state) => {
     return {
         isAuthenticated: state.auth.isAuthenticated,
+        loading: state.loading.isLoading
     };
 };
- 
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onSetAlert: (msg, type) => dispatch(setAlert(msg, type)),
         onInitRegister: (payload) => dispatch(initRegister(payload)),
+        loading_on: () => dispatch(loading_on()),
+        loading_off: () => dispatch(loading_off())
     };
 };
 

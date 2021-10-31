@@ -12,11 +12,10 @@ export const initRegister = (payload) => async (dispatch) => {
         const res = await sn_v1_account_repo.register(register_model)
 
         dispatch(registerSuccess(res.data));
-
         dispatch(initUserLoad());
     } catch (response) {
         const errors = response.data.errors;
-
+        
         if (errors) {
             errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
         }
@@ -99,12 +98,19 @@ export const authError = () => {
     };
 };
 
-export const logout = () => dispatch => {
+export const initial_logout = () => dispatch => {
+    clearProfile(dispatch);
+    logout(dispatch);
+};
+
+function clearProfile(dispatch){
     dispatch({
         type: actionType.CLEAR_PROFILE
     });
+};
 
+function logout(dispatch){
     dispatch({
         type: actionType.LOGOUT,
-    });  
-};
+    });
+}

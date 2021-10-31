@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import Input from '../../../components/UI/Input/Input';
 import Button from '../../../components/UI/Button/Button';
 
-import {initLogin} from '../../../store/actions/index';
+import {initLogin, loading_off, loading_on} from '../../../store/actions/index';
 import {input_helper as login_inputs_helper} from '../../../helpers/inputs_helper';
 
 
@@ -42,15 +42,17 @@ const Login = (props) => {
         },
     });
   
-    const submitHandler = (e) => {
+    const submitHandler = async(e) => {
         e.preventDefault();
+        props.loading_on();
 
         let user = {
             email: authForm['email'].value,
             password: authForm['password'].value,
         };
 
-        props.onInitLogin(user);
+        await props.onInitLogin(user);
+        props.loading_off();
     };
 
     const formElementArray = [];
@@ -86,17 +88,17 @@ const Login = (props) => {
             </Button>
         </form>
     );
-                    console.log(props)
+
     if (props.isAuthenticated) {
         return <Redirect to='/Dashboard' />;
     }
 
-    
     return (
         <div className='container'>
             <h1 className='large'>Sign In</h1>
             <p className='lead'>Sign in to your account</p>
             {form}
+         
             <p>
                 Don't have an account? <Link to='/Register'>Sign Up</Link>
             </p>
@@ -106,14 +108,15 @@ const Login = (props) => {
 
 const mapStateTpProps = (state) => {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
-        loading: state.auth.loading
+        isAuthenticated: state.auth.isAuthenticated
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onInitLogin: (payload) => dispatch(initLogin(payload)),
+        loading_on: () => dispatch(loading_on()),
+        loading_off: () => dispatch(loading_off())
     };
 };
 

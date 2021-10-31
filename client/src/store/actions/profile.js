@@ -26,10 +26,12 @@ function profile_error(error) {
     }
 };
 
-export const createProfile = (form, history, edit = false ) => async(dispatch) => {
+export const createProfile = (form, history, edit = false) => async (dispatch) => {
     try {
         const response = await sn_v1_profile_repo.post(form);
+
+        return response;
     } catch (error) {
-        
+        return Promise.reject(error)
     }
 }

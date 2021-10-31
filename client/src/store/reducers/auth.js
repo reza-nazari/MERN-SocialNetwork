@@ -3,20 +3,12 @@ import * as actionType from '../actionTypes';
 const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: false,
-    loading: false,
     user: null,
 };
 
 const reducer = (state = initialState, action) => {
-    const {type, payload} = action;
+    const { type, payload } = action;
     switch (type) {
-        case actionType.USER_LOAD_SUCCESS:
-            return {
-                ...state,
-                isAuthenticated: true,
-                loading: false,
-                user: payload,
-            };
         case actionType.REGISTER_SUCCESS:
         case actionType.LOGIN_SUCCESS:
             localStorage.setItem('token', payload.token);
@@ -36,6 +28,13 @@ const reducer = (state = initialState, action) => {
                 token: null,
                 isAuthenticated: false,
                 loading: false,
+            };
+        case actionType.USER_LOAD_SUCCESS:
+            return {
+                ...state,
+                isAuthenticated: true,
+                loading: false,
+                user: payload,
             };
         default:
             return state;
